@@ -10,6 +10,10 @@ on:
         description: '=timeline list'
         default: '01:10-01:15, 03:20-03:35'
         required: true
+    secrets:
+      COOKIES:
+        description: 'YouTube Cookies (optional, to bypass bot detection)'
+        required: false
 
 jobs:
   edit:
@@ -17,6 +21,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,6 +37,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
           pip install -r requirements.txt
+
+      - name: Create cookies file
+        if: "${{ secrets.COOKIES != '' }}"
+        run: echo "${{ secrets.COOKIES }}" > cookies.txt
 
       - name: Run video editing script
         run: python edit_video.py "${{ github.event.inputs.video_url }}" "${{ github.event.inputs.timeline }}"

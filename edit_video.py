@@ -16,13 +16,24 @@ def parse_timeline(timeline_str):
 def download_video(url, output_name="input.mp4"):
     print(f"Downloading video from {url}...")
     # Using -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best' to ensure mp4 format for easier processing
-    subprocess.run([
+    cmd = [
         'yt-dlp',
         '-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
         '--merge-output-format', 'mp4',
         '-o', output_name,
-        url
-    ], check=True)
+    ]
+
+    # Add common arguments to bypass bot detection
+    cmd.extend(['--extractor-args', 'youtube:player_client=android,web'])
+
+    # Use cookies if available
+    if os.path.exists('cookies.txt'):
+        print("Using cookies from cookies.txt")
+        cmd.extend(['--cookies', 'cookies.txt'])
+
+    cmd.append(url)
+
+    subprocess.run(cmd, check=True)
     return output_name
 
 def clip_video(input_file, segments):

@@ -12,6 +12,15 @@ This repository contains a GitHub Action to download, clip, and concatenate segm
 6.  Click **Run workflow**.
 7.  Once finished, the edited video will be available as an artifact named `final_video`.
 
+## Troubleshooting Bot Detection
+
+If the workflow fails with an error like "Sign in to confirm you’re not a bot", you may need to provide YouTube cookies:
+
+1.  Use a browser extension like "Get cookies.txt LOCALLY" to export your YouTube cookies in Netscape format.
+2.  In your GitHub repository, go to **Settings** > **Secrets and variables** > **Actions**.
+3.  Create a new repository secret named `COOKIES` and paste the contents of your cookies file.
+4.  Run the workflow again.
+
 ## Timeline Format
 
 The timeline should be a comma-separated list of time ranges. Each range should be in the format `START-END`, where `START` and `END` can be in `MM:SS` or `HH:MM:SS` format.
