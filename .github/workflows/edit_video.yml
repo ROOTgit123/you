@@ -7,7 +7,8 @@ on:
         description: 'YouTube Video URL'
         required: true
       timeline:
-        description: 'Timeline list (e.g., 01:10-01:15, 03:20-03:35)'
+        description: '=timeline list'
+        default: '01:10-01:15, 03:20-03:35'
         required: true
 
 jobs:
@@ -20,28 +21,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-          cache: 'pip' # Automatically caches based on requirements.txt
+          python-version: '3.x'
 
-      - name: Install System Dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
-
-      - name: Install Python Dependencies
-        run: |
-          pip install yt-dlp moviepy # Adding common video libs
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
 
       - name: Run video editing script
-        env:
-          VIDEO_URL: ${{ github.event.inputs.video_url }}
-          TIMELINE: ${{ github.event.inputs.timeline }}
-        run: python edit_video.py "$VIDEO_URL" "$TIMELINE"
+        run: python edit_video.py "${{ github.event.inputs.video_url }}" "${{ github.event.inputs.timeline }}"
 
       - name: Upload video artifact
         uses: actions/upload-artifact@v4
         with:
-          name: edited-video-${{ github.run_id }}
+          name: final_video
           path: final_video.mp4
-          retention-days: 5 # Saves space on your GitHub storage
