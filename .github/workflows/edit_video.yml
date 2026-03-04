@@ -10,6 +10,10 @@ on:
         description: '=timeline list'
         default: '01:10-01:15, 03:20-03:35'
         required: true
+      download_method:
+        description: 'Download Method (auto, yt-dlp-android, you-get, yt-dlp-aria2c)'
+        default: 'auto'
+        required: true
     secrets:
       COOKIES:
         description: 'YouTube Cookies (optional, to bypass bot detection)'
@@ -35,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg aria2
           pip install -r requirements.txt
 
       - name: Create cookies file
@@ -43,7 +47,7 @@ jobs:
         run: echo "${{ secrets.COOKIES }}" > cookies.txt
 
       - name: Run video editing script
-        run: python edit_video.py "${{ github.event.inputs.video_url }}" "${{ github.event.inputs.timeline }}"
+        run: python edit_video.py "${{ github.event.inputs.video_url }}" "${{ github.event.inputs.timeline }}" "${{ github.event.inputs.download_method }}"
 
       - name: Upload video artifact
         uses: actions/upload-artifact@v4
